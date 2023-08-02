@@ -19,20 +19,21 @@
 
 package de.siegmar.logbackgelf;
 
-import java.util.Random;
-import java.util.function.Supplier;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.LongSupplier;
 
 /**
  * Supplier implementation for GELF message IDs as used for UDP chunks. Unfortunately the GELF
  * protocol limits the message id length to 8 bytes thus an UUID cannot be used (16 bytes).
  */
-public class MessageIdSupplier implements Supplier<Long> {
+public class MessageIdSupplier implements LongSupplier {
 
-    // static random to keep Spotbugs happy
-    private static final Random RANDOM = new Random();
-    private int machinePart = RANDOM.nextInt();
+    private int machinePart = ThreadLocalRandom.current().nextInt();
+    private final AtomicLong cnt = new AtomicLong(ThreadLocalRandom.current().nextInt());
 
-    public int getMachinePart() {
+
+    public int getMachinePart () {
         return machinePart;
     }
 
@@ -42,8 +43,7 @@ public class MessageIdSupplier implements Supplier<Long> {
 
     @SuppressWarnings("checkstyle:magicnumber")
     @Override
-    public Long get() {
-        return (long) machinePart << 32 | System.nanoTime() & 0xffffffffL;
+    public long getAsLong () {
+        return (long) machinePart << 32 | cnt.incrementAndGet() & 0xffffffffL;
     }
-
 }

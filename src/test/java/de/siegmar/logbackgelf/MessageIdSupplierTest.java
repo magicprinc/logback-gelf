@@ -19,9 +19,9 @@
 
 package de.siegmar.logbackgelf;
 
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MessageIdSupplierTest {
 
@@ -29,15 +29,15 @@ public class MessageIdSupplierTest {
 
     @Test
     public void test() {
-        final Long messageId = messageIdSupplier.get();
-        assertNotEquals(messageId, messageIdSupplier.get());
+        final Long messageId = messageIdSupplier.getAsLong();
+        assertNotEquals(messageId, messageIdSupplier.getAsLong());
     }
 
     @Test
     void machinePart() {
         messageIdSupplier.setMachinePart(23282);
-        final Long messageId = messageIdSupplier.get();
-        assertNotEquals(messageId, messageIdSupplier.get());
+        final Long messageId = messageIdSupplier.getAsLong();
+        assertNotEquals(messageId, messageIdSupplier.getAsLong());
     }
 
 }
