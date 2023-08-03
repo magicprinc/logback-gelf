@@ -4,7 +4,7 @@ plugins {
     id 'signing'
     id 'checkstyle'
     id 'jacoco'
-    id 'com.github.spotbugs' version '4.5.0'
+    id 'com.github.spotbugs' version 'latest.release'
     id("net.ltgt.errorprone")  version "latest.release" // https://errorprone.info/
 }
 
@@ -37,6 +37,7 @@ dependencies {
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // = compileJava.options.encoding = "UTF-8"
     options.compilerArgs.addAll(['-Xlint:all,-serial', '-parameters'])
+    options.release.set(11) // javac --release 7..20+
     options.deprecation = true
 
     options.errorprone {
