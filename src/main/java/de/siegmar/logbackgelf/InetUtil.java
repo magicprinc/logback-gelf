@@ -24,6 +24,7 @@ import java.net.NetworkInterface;
 import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
+import java.util.Set;
 
 final class InetUtil {
 
@@ -42,10 +43,12 @@ final class InetUtil {
                 return value;
             }
         } catch (Throwable ignore){
+            // no SecurityManager since Java 17+ => no exceptions
         }
         try {
             return System.getenv(envVarName);
         } catch (Exception ignore){
+            // no SecurityManager since Java 17+ => no exceptions
         }
         return null;
     }
@@ -130,7 +133,7 @@ final class InetUtil {
         return hostName;
     }
 
-    private static void collectInetAddrProperties (InetAddress inetAddress, LinkedHashSet<String> namesLoCase, LinkedHashSet<String> names) {
+    private static void collectInetAddrProperties (InetAddress inetAddress, Set<String> namesLoCase, Set<String> names) {
         if (inetAddress.isLoopbackAddress()){
             return;
         }
@@ -142,7 +145,7 @@ final class InetUtil {
         }
         s = trim(inetAddress.getHostName());
         z = s.toLowerCase();
-        if (namesLoCase.add(s.toLowerCase())){
+        if (namesLoCase.add(z)){
             names.add(s); // e.g. K39
         }
         //s = trim(inetAddress.getHostAddress()); if (namesLoCase.add(s.toLowerCase())){ names.add(s); // e.g. 10.3.104.16 }

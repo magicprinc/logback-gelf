@@ -19,9 +19,9 @@
 
 package de.siegmar.logbackgelf;
 
-import javax.net.SocketFactory;
-
 import de.siegmar.logbackgelf.pool.SimpleObjectPool;
+
+import javax.net.SocketFactory;
 
 public class GelfTcpAppender extends AbstractGelfAppender {
 
@@ -148,7 +148,7 @@ public class GelfTcpAppender extends AbstractGelfAppender {
         this.poolMaxIdleTime = poolMaxIdleTime;
     }
 
-    protected void startAppender() {
+    @Override protected void startAppender() {
         final AddressResolver addressResolver = new AddressResolver(getGraylogHost());
 
         connectionPool = new SimpleObjectPool<>(() -> new TcpConnection(initSocketFactory(),

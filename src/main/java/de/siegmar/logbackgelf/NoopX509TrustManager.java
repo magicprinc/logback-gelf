@@ -19,19 +19,18 @@
 
 package de.siegmar.logbackgelf;
 
-import java.security.cert.X509Certificate;
-
 import javax.net.ssl.X509TrustManager;
+import java.security.cert.X509Certificate;
 
 class NoopX509TrustManager implements X509TrustManager {
 
-    public void checkClientTrusted(final X509Certificate[] chain, final String authType) {
+    @Override public void checkClientTrusted(final X509Certificate[] chain, final String authType) {
     }
 
-    public void checkServerTrusted(final X509Certificate[] chain, final String authType) {
+    @Override public void checkServerTrusted(final X509Certificate[] chain, final String authType) {
     }
 
-    public X509Certificate[] getAcceptedIssuers() {
+    @Override public X509Certificate[] getAcceptedIssuers() {
         return new X509Certificate[0];
     }
 

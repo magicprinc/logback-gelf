@@ -44,6 +44,6 @@ public class MessageIdSupplier implements LongSupplier {
     @SuppressWarnings("checkstyle:magicnumber")
     @Override
     public long getAsLong () {
-        return (long) machinePart << 32 | cnt.incrementAndGet() & 0xffffffffL;
+        return ((long) machinePart << 32) | (cnt.incrementAndGet() & 0xff_ff_ff_ffL);
     }
 }
