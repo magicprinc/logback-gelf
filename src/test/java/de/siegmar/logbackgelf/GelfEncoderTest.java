@@ -34,7 +34,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
-import org.slf4j.event.KeyValuePair;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -171,18 +170,12 @@ public class GelfEncoderTest {
         final Logger logger = lc.getLogger(LOGGER_NAME);
 
         final LoggingEvent event = simpleLoggingEvent(logger, null);
-        event.addKeyValuePair(new KeyValuePair("key1", "value"));
-        event.addKeyValuePair(new KeyValuePair("key2", 123));
-        event.addKeyValuePair(new KeyValuePair("key3", true));
 
         final String logMsg = encodeToStr(event);
 
         final ObjectMapper om = new ObjectMapper();
         final JsonNode jsonNode = om.readTree(logMsg);
         coreValidation(jsonNode);
-        assertEquals("value", jsonNode.get("_key1").textValue());
-        assertEquals(123, jsonNode.get("_key2").numberValue());
-        assertEquals("true", jsonNode.get("_key3").textValue());
     }
 
     @Test
@@ -413,14 +406,14 @@ public class GelfEncoderTest {
         final Logger logger = lc.getLogger(LOGGER_NAME);
 
         final LoggingEvent event = simpleLoggingEvent(logger, null);
-        event.addMarker(MarkerFactory.getMarker("SINGLE"));
+        event.setMarker(MarkerFactory.getMarker("SINGLE"));
 
         final String logMsg = encodeToStr(event);
 
         final ObjectMapper om = new ObjectMapper();
         final JsonNode jsonNode = om.readTree(logMsg);
         coreValidation(jsonNode);
-        assertEquals("[SINGLE]", jsonNode.get("_marker").textValue());
+        assertEquals("SINGLE", jsonNode.get("_marker").textValue());
     }
 
     @Test
@@ -435,15 +428,15 @@ public class GelfEncoderTest {
         final LoggingEvent event = simpleLoggingEvent(logger, null);
         final Marker marker = MarkerFactory.getMarker("FIRST");
         marker.add(MarkerFactory.getMarker("SECOND"));
-        event.addMarker(marker);
-        event.addMarker(MarkerFactory.getMarker("THIRD"));
+        marker.add(MarkerFactory.getMarker("THIRD"));
+        event.setMarker(marker);
 
         final String logMsg = encodeToStr(event);
 
         final ObjectMapper om = new ObjectMapper();
         final JsonNode jsonNode = om.readTree(logMsg);
         coreValidation(jsonNode);
-        assertEquals("[FIRST [ SECOND ], THIRD]", jsonNode.get("_marker").textValue());
+        assertEquals("FIRST, SECOND, THIRD", jsonNode.get("_marker").textValue());
     }
 
     private String encodeToStr(final LoggingEvent event) {

@@ -24,7 +24,6 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.util.LevelToSyslogSeverity;
 import ch.qos.logback.core.encoder.EncoderBase;
 import de.siegmar.logbackgelf.mappers.CallerDataFieldMapper;
-import de.siegmar.logbackgelf.mappers.KeyValueFieldMapper;
 import de.siegmar.logbackgelf.mappers.MarkerFieldMapper;
 import de.siegmar.logbackgelf.mappers.MdcDataFieldMapper;
 import de.siegmar.logbackgelf.mappers.RootExceptionDataFieldMapper;
@@ -367,10 +366,6 @@ public class GelfEncoder extends EncoderBase<ILoggingEvent> {
 
         if (includeRootCauseData) {
             builtInFieldMappers.add(new RootExceptionDataFieldMapper());
-        }
-
-        if (includeKeyValues) {
-            builtInFieldMappers.add(new KeyValueFieldMapper());
         }
 
         if (includeMarker) {
