@@ -35,7 +35,7 @@ dependencies {
     testImplementation("org.assertj:assertj-core:3.25.3")
     testImplementation("net.javacrumbs.json-unit:json-unit-assertj:2.38.0")
     testImplementation("com.fasterxml.jackson.core:jackson-databind:2.16.+")
-    testImplementation("org.bouncycastle:bcpkix-jdk18on:1.77")
+    testImplementation("org.bouncycastle:bcpkix-jdk18on:1.78")
     testImplementation("org.wiremock:wiremock:3.4.2")
     testImplementation("org.awaitility:awaitility:4.2.1")
 }
