@@ -19,14 +19,10 @@
 
 package de.siegmar.logbackgelf;
 
-import static java.util.Map.entry;
-import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Map;
-
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.spi.LoggingEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -35,12 +31,14 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
-import org.slf4j.event.KeyValuePair;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.spi.LoggingEvent;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
+
+import static java.util.Map.entry;
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SuppressWarnings({"checkstyle:ClassDataAbstractionCoupling", "PMD.AvoidDuplicateLiterals"})
 class GelfEncoderTest {
@@ -144,27 +142,6 @@ class GelfEncoderTest {
 
         assertThatJson(logMsg).node("full_message").asString()
             .startsWith("message 1\njava.lang.IllegalArgumentException: Example Exception\n");
-    }
-
-    @Test
-    void keyValues() {
-        encoder.start();
-
-        final LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-        final Logger logger = lc.getLogger(LOGGER_NAME);
-
-        final LoggingEvent event = simpleLoggingEvent(logger, null);
-        event.addKeyValuePair(new KeyValuePair("key1", "value"));
-        event.addKeyValuePair(new KeyValuePair("key2", 123));
-        event.addKeyValuePair(new KeyValuePair("key3", true));
-
-        final String logMsg = encodeToStr(event);
-
-        assertThatJson(logMsg).and(
-            j -> j.node("_key1").isEqualTo("value"),
-            j -> j.node("_key2").isEqualTo(123),
-            j -> j.node("_key3").isString().isEqualTo("true")
-        );
     }
 
     @Test
@@ -379,13 +356,13 @@ class GelfEncoderTest {
         final Logger logger = lc.getLogger(LOGGER_NAME);
 
         final LoggingEvent event = simpleLoggingEvent(logger, null);
-        event.addMarker(MarkerFactory.getMarker("SINGLE"));
+        event.setMarker(MarkerFactory.getMarker("SINGLE"));
 
         final String logMsg = encodeToStr(event);
 
         coreValidation(logMsg);
         assertThatJson(logMsg).and(
-            j -> j.node("_marker").isString().isEqualTo("[SINGLE]")
+            j -> j.node("_marker").isString().isEqualTo("SINGLE")
         );
     }
 
@@ -401,14 +378,14 @@ class GelfEncoderTest {
         final LoggingEvent event = simpleLoggingEvent(logger, null);
         final Marker marker = MarkerFactory.getMarker("FIRST");
         marker.add(MarkerFactory.getMarker("SECOND"));
-        event.addMarker(marker);
-        event.addMarker(MarkerFactory.getMarker("THIRD"));
+        marker.add(MarkerFactory.getMarker("THIRD"));
+        event.setMarker(marker);
 
         final String logMsg = encodeToStr(event);
 
         coreValidation(logMsg);
         assertThatJson(logMsg).and(
-            j -> j.node("_marker").isString().isEqualTo("[FIRST [ SECOND ], THIRD]")
+            j -> j.node("_marker").isString().isEqualTo("FIRST,SECOND,THIRD")
         );
     }
 

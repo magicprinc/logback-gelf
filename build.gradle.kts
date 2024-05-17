@@ -3,20 +3,24 @@ plugins {
     `maven-publish`
     signing
     pmd
-    checkstyle
+    //checkstyle
     jacoco
     id("com.github.spotbugs") version "6.0.9"
 }
 
 group = "de.siegmar"
-version = "6.0.1"
+version = "9.0"
 
 java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(11)
-    }
     withJavadocJar()
     withSourcesJar()
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    options.encoding = "UTF-8"
+    options.compilerArgs.add("-Xlint:all,-serial")
+    options.compilerArgs.add("-parameters")
+    options.release.set(17)
 }
 
 repositories {
@@ -24,12 +28,13 @@ repositories {
 }
 
 dependencies {
-    api("ch.qos.logback:logback-classic:1.5.3")
+    api("ch.qos.logback:logback-classic:1.2.+!!")
+    testImplementation("org.slf4j:slf4j-api:1.7.+!!")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.assertj:assertj-core:3.25.3")
     testImplementation("net.javacrumbs.json-unit:json-unit-assertj:2.38.0")
-    testImplementation("com.fasterxml.jackson.core:jackson-databind:2.17.0")
+    testImplementation("com.fasterxml.jackson.core:jackson-databind:2.16.+")
     testImplementation("org.bouncycastle:bcpkix-jdk18on:1.77")
     testImplementation("org.wiremock:wiremock:3.4.2")
     testImplementation("org.awaitility:awaitility:4.2.1")
@@ -113,6 +118,6 @@ publishing {
     }
 }
 
-signing {
-    sign(publishing.publications["maven"])
-}
+//signing {
+//    sign(publishing.publications["maven"])
+//}

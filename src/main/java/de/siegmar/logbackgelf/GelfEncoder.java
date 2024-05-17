@@ -19,6 +19,18 @@
 
 package de.siegmar.logbackgelf;
 
+import ch.qos.logback.classic.PatternLayout;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.util.LevelToSyslogSeverity;
+import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.Layout;
+import ch.qos.logback.core.encoder.EncoderBase;
+import de.siegmar.logbackgelf.mappers.CallerDataFieldMapper;
+import de.siegmar.logbackgelf.mappers.MarkerFieldMapper;
+import de.siegmar.logbackgelf.mappers.MdcDataFieldMapper;
+import de.siegmar.logbackgelf.mappers.RootExceptionDataFieldMapper;
+import de.siegmar.logbackgelf.mappers.SimpleFieldMapper;
+
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -28,19 +40,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
-
-import ch.qos.logback.classic.PatternLayout;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.classic.util.LevelToSyslogSeverity;
-import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.Layout;
-import ch.qos.logback.core.encoder.EncoderBase;
-import de.siegmar.logbackgelf.mappers.CallerDataFieldMapper;
-import de.siegmar.logbackgelf.mappers.KeyValueFieldMapper;
-import de.siegmar.logbackgelf.mappers.MarkerFieldMapper;
-import de.siegmar.logbackgelf.mappers.MdcDataFieldMapper;
-import de.siegmar.logbackgelf.mappers.RootExceptionDataFieldMapper;
-import de.siegmar.logbackgelf.mappers.SimpleFieldMapper;
 
 /**
  * This class is responsible for transforming a Logback log event to a GELF message.
@@ -368,9 +367,9 @@ public class GelfEncoder extends EncoderBase<ILoggingEvent> {
             builtInFieldMappers.add(new RootExceptionDataFieldMapper());
         }
 
-        if (includeKeyValues) {
-            builtInFieldMappers.add(new KeyValueFieldMapper());
-        }
+//        if (includeKeyValues) {
+//            builtInFieldMappers.add(new KeyValueFieldMapper());
+//        }
 
         if (includeMarker) {
             builtInFieldMappers.add(new MarkerFieldMapper("marker"));
