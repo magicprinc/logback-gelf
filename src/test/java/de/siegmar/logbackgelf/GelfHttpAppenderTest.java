@@ -19,26 +19,31 @@
 
 package de.siegmar.logbackgelf;
 
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
+import com.github.tomakehurst.wiremock.matching.RequestPattern;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.slf4j.LoggerFactory;
+
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static java.net.HttpURLConnection.HTTP_ACCEPTED;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.awaitility.Awaitility.await;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
-import org.slf4j.LoggerFactory;
-
-import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
-import com.github.tomakehurst.wiremock.matching.RequestPattern;
-
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
-
 class GelfHttpAppenderTest {
 
     private static final String LOGGER_NAME = GelfHttpAppenderTest.class.getCanonicalName();
+    static {// fix test hangup in raw IDEA
+        var logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+        GelfHttpAppender gelfAppender = (GelfHttpAppender) logger.getAppender("GELF");
+        if (gelfAppender != null){
+            gelfAppender.stop();
+        }
+    }
 
     @RegisterExtension
     private static final WireMockExtension WIRE_MOCK = WireMockExtension.newInstance()
