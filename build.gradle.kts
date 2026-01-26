@@ -32,7 +32,7 @@ dependencies {
     testImplementation("org.slf4j:slf4j-api:1.7.+!!")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    testImplementation("org.assertj:assertj-core:3.25.3")
+    testImplementation("org.assertj:assertj-core:3.27.7")
     testImplementation("net.javacrumbs.json-unit:json-unit-assertj:2.38.0")
     testImplementation("com.fasterxml.jackson.core:jackson-databind:2.16.+")
     testImplementation("org.bouncycastle:bcpkix-jdk18on:1.78")
